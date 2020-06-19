@@ -3,19 +3,16 @@ package xyz.przemyk.gutech.blocks.generator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.IContainerProvider;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.AbstractCookingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -23,17 +20,21 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import xyz.przemyk.gutech.PrzemekTechMod;
 import xyz.przemyk.gutech.SerializableEnergyStorage;
+import xyz.przemyk.gutech.blocks.AbstractTechTileEntity;
 import xyz.przemyk.gutech.setup.ModTileEntities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FurnaceGeneratorTileEntity extends TileEntity implements ITickableTileEntity, IContainerProvider, INamedContainerProvider {
+public class FurnaceGeneratorTileEntity extends AbstractTechTileEntity {
 
-    private final LazyOptional<IItemHandler> itemHandler = LazyOptional.of(this::createItemHandler);
-    private final LazyOptional<SerializableEnergyStorage> energyStorage = LazyOptional.of(this::createEnergyStorage);
+    public FurnaceGeneratorTileEntity() {
+        super(ModTileEntities.FURNACE_GENERATOR.get(),
+                LazyOptional.of(FurnaceGeneratorTileEntity::createItemHandler),
+                LazyOptional.of(FurnaceGeneratorTileEntity::createEnergyStorage));
+    }
 
-    private IItemHandler createItemHandler() {
+    private static IItemHandler createItemHandler() {
         return new ItemStackHandler(1) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
@@ -52,12 +53,8 @@ public class FurnaceGeneratorTileEntity extends TileEntity implements ITickableT
         };
     }
 
-    private SerializableEnergyStorage createEnergyStorage() {
+    private static SerializableEnergyStorage createEnergyStorage() {
         return new SerializableEnergyStorage(10000, 20);
-    }
-
-    public FurnaceGeneratorTileEntity() {
-        super(ModTileEntities.FURNACE_GENERATOR.get());
     }
 
     public int burnTime;
@@ -77,7 +74,9 @@ public class FurnaceGeneratorTileEntity extends TileEntity implements ITickableT
                         burnTime = ForgeHooks.getBurnTime(h.getStackInSlot(0));
                         if (burnTime > 0) {
                             h.extractItem(0, 1, false);
-                            world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.LIT, true));
+                            if (!world.isRemote) {
+                                world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.LIT, true));
+                            }
                         }
                     });
                 }
@@ -85,20 +84,14 @@ public class FurnaceGeneratorTileEntity extends TileEntity implements ITickableT
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void read(CompoundNBT compound) {
-        itemHandler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(compound.getCompound("inv")));
-        energyStorage.ifPresent(energy -> energy.deserializeNBT(compound.getCompound("energy")));
         burnTime = compound.getInt("burnTime");
         super.read(compound);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public CompoundNBT write(CompoundNBT compound) {
-        itemHandler.ifPresent(h -> compound.put("inv", ((INBTSerializable<CompoundNBT>) h).serializeNBT()));
-        energyStorage.ifPresent(energy -> compound.put("energy", energy.serializeNBT()));
         compound.putInt("burnTime", burnTime);
         return super.write(compound);
     }
@@ -108,10 +101,6 @@ public class FurnaceGeneratorTileEntity extends TileEntity implements ITickableT
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return itemHandler.cast();
-        }
-
-        if (cap == CapabilityEnergy.ENERGY) {
-            return energyStorage.cast();
         }
 
         return super.getCapability(cap, side);

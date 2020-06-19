@@ -24,6 +24,7 @@ public class FurnaceGeneratorScreen extends ContainerScreen<FurnaceGeneratorCont
         }
     }
 
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String s = this.title.getFormattedText();
         this.font.drawString(s, (float)(this.xSize / 2 - this.font.getStringWidth(s) / 2), 6.0F, 4210752);
