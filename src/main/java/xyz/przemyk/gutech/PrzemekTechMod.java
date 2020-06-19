@@ -4,6 +4,7 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import xyz.przemyk.gutech.blocks.furnace.ElectricFurnaceScreen;
 import xyz.przemyk.gutech.blocks.generator.FurnaceGeneratorScreen;
 import xyz.przemyk.gutech.setup.ModBlocks;
 import xyz.przemyk.gutech.setup.ModContainers;
@@ -25,5 +26,6 @@ public class PrzemekTechMod {
 
     public void init(FMLClientSetupEvent event) {
         ScreenManager.registerFactory(ModContainers.FURNACE_GENERATOR.get(), FurnaceGeneratorScreen::new);
+        ScreenManager.registerFactory(ModContainers.ELECTRIC_FURNACE.get(), ElectricFurnaceScreen::new);
     }
 }
