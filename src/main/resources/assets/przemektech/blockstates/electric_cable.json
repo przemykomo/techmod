@@ -1,37 +1,23 @@
 {
     "multipart": [
-        {   "when": { "OR": [
-            {"north": "none", "east": "none", "south": "none", "west": "none"},
-            {"north": "side|up", "east": "side|up" },
-            {"east": "side|up", "south": "side|up" },
-            {"south": "side|up", "west": "side|up"},
-            {"west": "side|up", "north": "side|up"}
-        ]},
+        {
             "apply": { "model": "przemektech:block/electric_cable_dot" }
         },
-        {   "when": { "OR": [
+        {   "when":
             { "north": "side|up" },
-            { "north": "none", "east": "none", "south": "side|up", "west": "none" }
-        ]},
-            "apply": { "model": "przemektech:block/electric_cable_side0" }
+            "apply": { "model": "przemektech:block/electric_cable_side" }
         },
-        {   "when": { "OR": [
+        {   "when":
             { "south": "side|up" },
-            { "north": "side|up", "east": "none", "south": "none", "west": "none" }
-        ]},
-            "apply": { "model": "przemektech:block/electric_cable_side0" }
+            "apply": { "model": "przemektech:block/electric_cable_side", "y": 180 }
         },
-        {   "when": { "OR": [
+        {   "when":
             { "east": "side|up" },
-            { "north": "none", "east": "none", "south": "none", "west": "side|up" }
-        ]},
-            "apply": { "model": "przemektech:block/electric_cable_side0", "y": 270 }
+            "apply": { "model": "przemektech:block/electric_cable_side", "y": 90 }
         },
-        {   "when": { "OR": [
+        {   "when":
             { "west": "side|up" },
-            { "north": "none", "east": "side|up", "south": "none", "west": "none" }
-        ]},
-            "apply": { "model": "przemektech:block/electric_cable_side0", "y": 270 }
+            "apply": { "model": "przemektech:block/electric_cable_side", "y": 270 }
         },
         {   "when": { "north": "up" },
             "apply": { "model": "przemektech:block/electric_cable_up" }

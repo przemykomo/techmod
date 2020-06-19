@@ -12,11 +12,11 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.przemyk.gutech.SerializableEnergyStorage;
 
-public abstract class AbstractTechContainer extends Container {
+public abstract class AbstractMachineContainer extends Container {
 
     protected final TileEntity tileEntity;
 
-    protected AbstractTechContainer(ContainerType<?> type, int id, World worldIn, BlockPos blockPosIn, PlayerInventory playerInventoryIn) {
+    protected AbstractMachineContainer(ContainerType<?> type, int id, World worldIn, BlockPos blockPosIn, PlayerInventory playerInventoryIn) {
         super(type, id);
         tileEntity = worldIn.getTileEntity(blockPosIn);
 

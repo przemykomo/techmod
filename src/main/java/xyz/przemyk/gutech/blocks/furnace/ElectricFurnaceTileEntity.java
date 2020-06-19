@@ -6,27 +6,22 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import xyz.przemyk.gutech.PrzemekTechMod;
 import xyz.przemyk.gutech.SerializableEnergyStorage;
-import xyz.przemyk.gutech.blocks.AbstractTechTileEntity;
+import xyz.przemyk.gutech.blocks.AbstractMachineTileEntity;
 import xyz.przemyk.gutech.setup.ModTileEntities;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ElectricFurnaceTileEntity extends AbstractTechTileEntity {
+public class ElectricFurnaceTileEntity extends AbstractMachineTileEntity {
 
     public static final int ENERGY_PER_TICK = 20;
     public static final int MAX_COOK_TIME = 200;
@@ -42,7 +37,7 @@ public class ElectricFurnaceTileEntity extends AbstractTechTileEntity {
     }
 
     private static SerializableEnergyStorage createEnergyStorage() {
-        return new SerializableEnergyStorage(10000, 20);
+        return new SerializableEnergyStorage(10000, 20, 0);
     }
 
     @Override
@@ -76,7 +71,7 @@ public class ElectricFurnaceTileEntity extends AbstractTechTileEntity {
                         world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.LIT, true));
                     }
 
-                    energy.extractEnergy(ENERGY_PER_TICK, false);
+                    energy.subtractEnergy(ENERGY_PER_TICK);
                     if (cookTime >= MAX_COOK_TIME && recipe != null) {
                         cookTime = 0;
                         handler.extractItem(0, 1, false);
@@ -106,15 +101,5 @@ public class ElectricFurnaceTileEntity extends AbstractTechTileEntity {
     public void read(CompoundNBT compound) {
         cookTime = compound.getInt("CookTime");
         super.read(compound);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-
-        return super.getCapability(cap, side);
     }
 }

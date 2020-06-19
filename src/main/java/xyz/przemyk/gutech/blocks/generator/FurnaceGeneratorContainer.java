@@ -11,11 +11,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import xyz.przemyk.gutech.blocks.AbstractTechContainer;
+import xyz.przemyk.gutech.blocks.AbstractMachineContainer;
 import xyz.przemyk.gutech.setup.ModBlocks;
 import xyz.przemyk.gutech.setup.ModContainers;
 
-public class FurnaceGeneratorContainer extends AbstractTechContainer {
+public class FurnaceGeneratorContainer extends AbstractMachineContainer {
 
     public FurnaceGeneratorContainer(int id, World worldIn, BlockPos blockPosIn, PlayerInventory playerInventoryIn) {
         super(ModContainers.FURNACE_GENERATOR.get(), id, worldIn, blockPosIn, playerInventoryIn);

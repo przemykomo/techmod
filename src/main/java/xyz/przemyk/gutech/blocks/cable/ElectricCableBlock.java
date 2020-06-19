@@ -16,6 +16,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
 import xyz.przemyk.gutech.setup.ModBlocks;
 
@@ -110,6 +111,15 @@ public class ElectricCableBlock extends Block {
 
     @SuppressWarnings("deprecation")
     @Override
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        if (!worldIn.isRemote() && !isValidPosition(state, worldIn, pos)) {
+            spawnDrops(state, worldIn, pos);
+            worldIn.removeBlock(pos, false);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
     public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
         BlockPos blockpos = pos.down();
         BlockState blockstate = worldIn.getBlockState(blockpos);
@@ -132,6 +142,7 @@ public class ElectricCableBlock extends Block {
         builder.add(NORTH, EAST, SOUTH, WEST);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void updateDiagonalNeighbors(BlockState state, IWorld worldIn, BlockPos pos, int flags) {
         try (BlockPos.PooledMutable pooledMutable = BlockPos.PooledMutable.retain()) {
@@ -159,4 +170,14 @@ public class ElectricCableBlock extends Block {
 
     }
 
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new ElectricCableTileEntity();
+    }
 }

@@ -1,6 +1,10 @@
 {
     "itemGroup.przemektech": "Przemek's Tech Mod",
+
     "block.przemektech.furnace_generator": "Furnace Generator",
+    "block.przemektech.electric_furnace": "Electric Furnace",
+    "block.przemektech.electric_cable": "Electric Cable",
+
     "przemektech.container.furnace_generator": "Furnace Generator",
     "przemektech.container.electric_furnace": "Electric Furnace"
 }

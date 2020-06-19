@@ -4,29 +4,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.AbstractCookingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import xyz.przemyk.gutech.PrzemekTechMod;
 import xyz.przemyk.gutech.SerializableEnergyStorage;
-import xyz.przemyk.gutech.blocks.AbstractTechTileEntity;
+import xyz.przemyk.gutech.blocks.AbstractMachineTileEntity;
 import xyz.przemyk.gutech.setup.ModTileEntities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FurnaceGeneratorTileEntity extends AbstractTechTileEntity {
+public class FurnaceGeneratorTileEntity extends AbstractMachineTileEntity {
 
     public FurnaceGeneratorTileEntity() {
         super(ModTileEntities.FURNACE_GENERATOR.get(),
@@ -54,7 +48,7 @@ public class FurnaceGeneratorTileEntity extends AbstractTechTileEntity {
     }
 
     private static SerializableEnergyStorage createEnergyStorage() {
-        return new SerializableEnergyStorage(10000, 20);
+        return new SerializableEnergyStorage(10000, 0, 20);
     }
 
     public int burnTime;
@@ -63,7 +57,7 @@ public class FurnaceGeneratorTileEntity extends AbstractTechTileEntity {
     public void tick() {
         if (burnTime > 0) {
             --burnTime;
-            energyStorage.ifPresent(energy -> energy.receiveEnergy(20, false));
+            energyStorage.ifPresent(energy -> energy.addEnergy(20));
             if (burnTime == 0 && !world.isRemote) {
                 world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.LIT, false));
             }
@@ -94,16 +88,6 @@ public class FurnaceGeneratorTileEntity extends AbstractTechTileEntity {
     public CompoundNBT write(CompoundNBT compound) {
         compound.putInt("burnTime", burnTime);
         return super.write(compound);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-
-        return super.getCapability(cap, side);
     }
 
     @Nullable
