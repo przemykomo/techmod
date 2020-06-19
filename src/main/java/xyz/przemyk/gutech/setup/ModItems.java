@@ -28,4 +28,5 @@ public class ModItems {
 
     public static final RegistryObject<BlockItem> FURNACE_GENERATOR = ITEMS.register("furnace_generator", () -> new BlockItem(ModBlocks.FURNACE_GENERATOR.get(), new Item.Properties().group(ITEM_GROUP)));
     public static final RegistryObject<BlockItem> ELECTRIC_FURNACE = ITEMS.register("electric_furnace", () -> new BlockItem(ModBlocks.ELECTRIC_FURNACE.get(), new Item.Properties().group(ITEM_GROUP)));
+    public static final RegistryObject<BlockItem> ELECTRIC_CABLE = ITEMS.register("electric_cable", () -> new BlockItem(ModBlocks.ELECTRIC_CABLE.get(), new Item.Properties().group(ITEM_GROUP)));
 }
