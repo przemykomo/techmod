@@ -151,23 +151,18 @@ public class ElectricCableBlock extends Block {
                 if (redstoneside != RedstoneSide.NONE && worldIn.getBlockState(pooledMutable.setPos(pos).move(direction)).getBlock() != this) {
                     pooledMutable.move(Direction.DOWN);
                     BlockState blockstate = worldIn.getBlockState(pooledMutable);
-                    if (blockstate.getBlock() != Blocks.OBSERVER) {
-                        BlockPos blockpos = pooledMutable.offset(direction.getOpposite());
-                        BlockState blockstate1 = blockstate.updatePostPlacement(direction.getOpposite(), worldIn.getBlockState(blockpos), worldIn, pooledMutable, blockpos);
-                        replaceBlock(blockstate, blockstate1, worldIn, pooledMutable, flags);
-                    }
+                    BlockPos blockpos = pooledMutable.offset(direction.getOpposite());
+                    BlockState blockstate1 = blockstate.updatePostPlacement(direction.getOpposite(), worldIn.getBlockState(blockpos), worldIn, pooledMutable, blockpos);
+                    replaceBlock(blockstate, blockstate1, worldIn, pooledMutable, flags);
 
                     pooledMutable.setPos(pos).move(direction).move(Direction.UP);
                     BlockState blockstate3 = worldIn.getBlockState(pooledMutable);
-                    if (blockstate3.getBlock() != Blocks.OBSERVER) {
-                        BlockPos blockpos1 = pooledMutable.offset(direction.getOpposite());
-                        BlockState blockstate2 = blockstate3.updatePostPlacement(direction.getOpposite(), worldIn.getBlockState(blockpos1), worldIn, pooledMutable, blockpos1);
-                        replaceBlock(blockstate3, blockstate2, worldIn, pooledMutable, flags);
-                    }
+                    BlockPos blockpos1 = pooledMutable.offset(direction.getOpposite());
+                    BlockState blockstate2 = blockstate3.updatePostPlacement(direction.getOpposite(), worldIn.getBlockState(blockpos1), worldIn, pooledMutable, blockpos1);
+                    replaceBlock(blockstate3, blockstate2, worldIn, pooledMutable, flags);
                 }
             }
         }
-
     }
 
     @Override
