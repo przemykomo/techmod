@@ -1,4 +1,4 @@
-package xyz.przemyk.gutech.blocks.generator;
+package xyz.przemyk.gutech.modules.machines.generator;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -20,17 +20,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
+import xyz.przemyk.gutech.modules.machines.AbstractMachineBlock;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
-public class FurnaceGeneratorBlock extends Block {
-
-    public FurnaceGeneratorBlock() {
-        super(Properties.create(Material.IRON)
-                .hardnessAndResistance(1.5F, 6.0F)
-                .sound(SoundType.METAL));
-    }
+public class FurnaceGeneratorBlock extends AbstractMachineBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
@@ -44,37 +38,8 @@ public class FurnaceGeneratorBlock extends Block {
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public FurnaceGeneratorTileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new FurnaceGeneratorTileEntity();
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!worldIn.isRemote) {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if (tileEntity instanceof INamedContainerProvider) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, pos);
-            }
-        }
-        return ActionResultType.SUCCESS;
-    }
-
-    @SuppressWarnings("deprecation")
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            worldIn.getTileEntity(pos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(0));
-            });
-
-
-            super.onReplaced(state, worldIn, pos, newState, isMoving);
-        }
     }
 
     // copied from FurnaceBlock

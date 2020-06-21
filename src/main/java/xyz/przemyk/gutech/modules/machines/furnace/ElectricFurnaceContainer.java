@@ -1,4 +1,4 @@
-package xyz.przemyk.gutech.blocks.furnace;
+package xyz.przemyk.gutech.modules.machines.furnace;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import xyz.przemyk.gutech.OutputSlotItemHandler;
-import xyz.przemyk.gutech.blocks.AbstractMachineContainer;
+import xyz.przemyk.gutech.modules.machines.AbstractMachineContainer;
 import xyz.przemyk.gutech.setup.ModBlocks;
 import xyz.przemyk.gutech.setup.ModContainers;
 

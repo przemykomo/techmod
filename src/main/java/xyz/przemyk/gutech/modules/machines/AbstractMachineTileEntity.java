@@ -1,4 +1,4 @@
-package xyz.przemyk.gutech.blocks;
+package xyz.przemyk.gutech.modules.machines;
 
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -9,7 +9,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import xyz.przemyk.gutech.SerializableEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

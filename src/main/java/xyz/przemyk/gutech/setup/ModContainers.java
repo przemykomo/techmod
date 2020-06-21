@@ -8,8 +8,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.przemyk.gutech.PrzemekTechMod;
-import xyz.przemyk.gutech.blocks.furnace.ElectricFurnaceContainer;
-import xyz.przemyk.gutech.blocks.generator.FurnaceGeneratorContainer;
+import xyz.przemyk.gutech.modules.machines.furnace.ElectricFurnaceContainer;
+import xyz.przemyk.gutech.modules.machines.generator.FurnaceGeneratorContainer;
 
 public class ModContainers {
     public static final DeferredRegister<ContainerType<?>> CONTAINERS = new DeferredRegister<>(ForgeRegistries.CONTAINERS, PrzemekTechMod.MODID);

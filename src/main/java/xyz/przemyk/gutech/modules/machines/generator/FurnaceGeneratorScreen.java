@@ -1,4 +1,4 @@
-package xyz.przemyk.gutech.blocks.generator;
+package xyz.przemyk.gutech.modules.machines.generator;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;

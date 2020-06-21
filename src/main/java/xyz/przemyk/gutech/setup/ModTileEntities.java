@@ -6,9 +6,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.przemyk.gutech.PrzemekTechMod;
-import xyz.przemyk.gutech.blocks.cable.ElectricCableTileEntity;
-import xyz.przemyk.gutech.blocks.furnace.ElectricFurnaceTileEntity;
-import xyz.przemyk.gutech.blocks.generator.FurnaceGeneratorTileEntity;
+import xyz.przemyk.gutech.modules.cables.ElectricCableTileEntity;
+import xyz.przemyk.gutech.modules.machines.furnace.ElectricFurnaceTileEntity;
+import xyz.przemyk.gutech.modules.machines.generator.FurnaceGeneratorTileEntity;
 
 @SuppressWarnings("ConstantConditions")
 public class ModTileEntities {

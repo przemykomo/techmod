@@ -1,4 +1,4 @@
-package xyz.przemyk.gutech.blocks;
+package xyz.przemyk.gutech.modules.machines;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -10,7 +10,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import xyz.przemyk.gutech.SerializableEnergyStorage;
 
 public abstract class AbstractMachineContainer extends Container {
 

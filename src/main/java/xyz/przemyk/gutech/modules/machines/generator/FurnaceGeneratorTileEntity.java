@@ -1,4 +1,4 @@
-package xyz.przemyk.gutech.blocks.generator;
+package xyz.przemyk.gutech.modules.machines.generator;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,8 +13,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import xyz.przemyk.gutech.PrzemekTechMod;
-import xyz.przemyk.gutech.SerializableEnergyStorage;
-import xyz.przemyk.gutech.blocks.AbstractMachineTileEntity;
+import xyz.przemyk.gutech.modules.machines.SerializableEnergyStorage;
+import xyz.przemyk.gutech.modules.machines.AbstractMachineTileEntity;
 import xyz.przemyk.gutech.setup.ModTileEntities;
 
 import javax.annotation.Nonnull;
@@ -55,14 +55,15 @@ public class FurnaceGeneratorTileEntity extends AbstractMachineTileEntity {
 
     @Override
     public void tick() {
+        super.tick();
         if (burnTime > 0) {
             --burnTime;
-            energyStorage.ifPresent(energy -> energy.addEnergy(20));
+            optionalEnergyStorage.ifPresent(energy -> energy.addEnergy(20));
             if (burnTime == 0 && !world.isRemote) {
                 world.setBlockState(pos, world.getBlockState(pos).with(BlockStateProperties.LIT, false));
             }
         } else {
-            energyStorage.ifPresent(energy -> {
+            optionalEnergyStorage.ifPresent(energy -> {
                 if (energy.getEnergyStored() != energy.getMaxEnergyStored()) {
                     itemHandler.ifPresent(h -> {
                         burnTime = ForgeHooks.getBurnTime(h.getStackInSlot(0));

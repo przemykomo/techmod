@@ -1,4 +1,4 @@
-package xyz.przemyk.gutech.blocks.furnace;
+package xyz.przemyk.gutech.modules.machines.furnace;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -15,8 +15,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import xyz.przemyk.gutech.PrzemekTechMod;
-import xyz.przemyk.gutech.SerializableEnergyStorage;
-import xyz.przemyk.gutech.blocks.AbstractMachineTileEntity;
+import xyz.przemyk.gutech.modules.machines.SerializableEnergyStorage;
+import xyz.przemyk.gutech.modules.machines.AbstractMachineTileEntity;
 import xyz.przemyk.gutech.setup.ModTileEntities;
 
 import javax.annotation.Nullable;
@@ -44,7 +44,6 @@ public class ElectricFurnaceTileEntity extends AbstractMachineTileEntity {
     public ITextComponent getDisplayName() {
         return new TranslationTextComponent(PrzemekTechMod.MODID + ".container.electric_furnace");
     }
-
     @Nullable
     @Override
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity) {
@@ -55,7 +54,8 @@ public class ElectricFurnaceTileEntity extends AbstractMachineTileEntity {
 
     @Override
     public void tick() {
-        energyStorage.ifPresent(energy -> itemHandler.ifPresent(handler -> {
+        super.tick();
+        optionalEnergyStorage.ifPresent(energy -> itemHandler.ifPresent(handler -> {
             ItemStack input = handler.getStackInSlot(0);
             if (energy.getEnergyStored() < ENERGY_PER_TICK || input.isEmpty()) {
                 if (!world.isRemote && world.getBlockState(pos).get(BlockStateProperties.LIT)) {
