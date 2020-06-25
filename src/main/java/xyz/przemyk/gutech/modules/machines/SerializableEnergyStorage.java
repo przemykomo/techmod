@@ -1,14 +1,10 @@
-package xyz.przemyk.gutech;
+package xyz.przemyk.gutech.modules.machines;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
 
 public class SerializableEnergyStorage extends EnergyStorage implements INBTSerializable<CompoundNBT> {
-
-    public SerializableEnergyStorage(int capacity, int maxTransfer) {
-        super(capacity, maxTransfer);
-    }
 
     public SerializableEnergyStorage(int capacity, int maxReceive, int maxExtract) {
         super(capacity, maxReceive, maxExtract);
@@ -26,11 +22,23 @@ public class SerializableEnergyStorage extends EnergyStorage implements INBTSeri
         this.energy -= Math.min(energy, maxEnergy);
     }
 
+    public int maxExtract() {
+        return maxExtract;
+    }
+
+    public int maxReceive() {
+        return maxReceive;
+    }
+
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT compound = new CompoundNBT();
         compound.putInt("energy", getEnergyStored());
         return compound;
+    }
+
+    public void write(CompoundNBT compound) {
+        compound.putInt("energy", getEnergyStored());
     }
 
     @Override

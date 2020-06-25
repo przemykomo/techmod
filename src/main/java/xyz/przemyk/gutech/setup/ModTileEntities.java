@@ -26,6 +26,7 @@ public class ModTileEntities {
             TILE_ENTITIES.register("electric_furnace", () ->
                     TileEntityType.Builder.create(ElectricFurnaceTileEntity::new, ModBlocks.ELECTRIC_FURNACE.get()).build(null));
 
+    // each electric cable type MUST have different TileEntityType to make sure cable networks are working correctly
     public static final RegistryObject<TileEntityType<ElectricCableTileEntity>> ELECTRIC_CABLE =
             TILE_ENTITIES.register("electric_cable", () ->
                     TileEntityType.Builder.create(ElectricCableTileEntity::new, ModBlocks.ELECTRIC_CABLE.get()).build(null));

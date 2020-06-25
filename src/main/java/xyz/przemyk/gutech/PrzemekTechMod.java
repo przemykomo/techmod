@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import xyz.przemyk.gutech.blocks.furnace.ElectricFurnaceScreen;
-import xyz.przemyk.gutech.blocks.generator.FurnaceGeneratorScreen;
+import xyz.przemyk.gutech.modules.machines.furnace.ElectricFurnaceScreen;
+import xyz.przemyk.gutech.modules.machines.generator.FurnaceGeneratorScreen;
 import xyz.przemyk.gutech.setup.ModBlocks;
 import xyz.przemyk.gutech.setup.ModContainers;
 import xyz.przemyk.gutech.setup.ModItems;
@@ -31,5 +31,6 @@ public class PrzemekTechMod {
         ScreenManager.registerFactory(ModContainers.ELECTRIC_FURNACE.get(), ElectricFurnaceScreen::new);
 
         RenderTypeLookup.setRenderLayer(ModBlocks.ELECTRIC_CABLE.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.FAST_ELECTRIC_CABLE.get(), RenderType.getCutout());
     }
 }

@@ -1,0 +1,35 @@
+{
+    "multipart": [
+        {
+            "apply": { "model": "przemektech:block/fast_electric_cable_dot" }
+        },
+        {   "when":
+            { "north": "side|up" },
+            "apply": { "model": "przemektech:block/fast_electric_cable_side" }
+        },
+        {   "when":
+            { "south": "side|up" },
+            "apply": { "model": "przemektech:block/fast_electric_cable_side", "y": 180 }
+        },
+        {   "when":
+            { "east": "side|up" },
+            "apply": { "model": "przemektech:block/fast_electric_cable_side", "y": 90 }
+        },
+        {   "when":
+            { "west": "side|up" },
+            "apply": { "model": "przemektech:block/fast_electric_cable_side", "y": 270 }
+        },
+        {   "when": { "north": "up" },
+            "apply": { "model": "przemektech:block/fast_electric_cable_up" }
+        },
+        {   "when": { "east": "up" },
+            "apply": { "model": "przemektech:block/fast_electric_cable_up", "y": 90 }
+        },
+        {   "when": { "south": "up" },
+            "apply": { "model": "przemektech:block/fast_electric_cable_up", "y": 180 }
+        },
+        {   "when": { "west": "up" },
+            "apply": { "model": "przemektech:block/fast_electric_cable_up", "y": 270 }
+        }
+    ]
+}

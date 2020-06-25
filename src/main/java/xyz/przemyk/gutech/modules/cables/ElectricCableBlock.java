@@ -1,14 +1,20 @@
-package xyz.przemyk.gutech.blocks.cable;
+package xyz.przemyk.gutech.modules.cables;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import net.minecraft.block.*;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RedstoneSide;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -17,13 +23,16 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.energy.CapabilityEnergy;
-import xyz.przemyk.gutech.setup.ModBlocks;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class ElectricCableBlock extends Block {
+
+    public final int maxTransfer;
 
     public static final EnumProperty<RedstoneSide> NORTH = BlockStateProperties.REDSTONE_NORTH;
     public static final EnumProperty<RedstoneSide> EAST = BlockStateProperties.REDSTONE_EAST;
@@ -33,13 +42,14 @@ public class ElectricCableBlock extends Block {
 
     protected static final VoxelShape[] SHAPES = new VoxelShape[]{Block.makeCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 1.0D, 13.0D), Block.makeCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 1.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 3.0D, 13.0D, 1.0D, 13.0D), Block.makeCuboidShape(0.0D, 0.0D, 3.0D, 13.0D, 1.0D, 16.0D), Block.makeCuboidShape(3.0D, 0.0D, 0.0D, 13.0D, 1.0D, 13.0D), Block.makeCuboidShape(3.0D, 0.0D, 0.0D, 13.0D, 1.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 13.0D, 1.0D, 13.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 13.0D, 1.0D, 16.0D), Block.makeCuboidShape(3.0D, 0.0D, 3.0D, 16.0D, 1.0D, 13.0D), Block.makeCuboidShape(3.0D, 0.0D, 3.0D, 16.0D, 1.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 3.0D, 16.0D, 1.0D, 13.0D), Block.makeCuboidShape(0.0D, 0.0D, 3.0D, 16.0D, 1.0D, 16.0D), Block.makeCuboidShape(3.0D, 0.0D, 0.0D, 16.0D, 1.0D, 13.0D), Block.makeCuboidShape(3.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 13.0D), Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D)};
 
-    public ElectricCableBlock() {
+    public ElectricCableBlock(int maxTransfer) {
         super(Properties.from(Blocks.REDSTONE_WIRE));
         this.setDefaultState(this.stateContainer.getBaseState()
                 .with(NORTH, RedstoneSide.NONE)
                 .with(EAST, RedstoneSide.NONE)
                 .with(SOUTH, RedstoneSide.NONE)
                 .with(WEST, RedstoneSide.NONE));
+        this.maxTransfer = maxTransfer;
     }
 
     @SuppressWarnings("deprecation")
@@ -80,16 +90,6 @@ public class ElectricCableBlock extends Block {
         return this.getDefaultState().with(WEST, this.getSide(iblockreader, blockpos, Direction.WEST)).with(EAST, this.getSide(iblockreader, blockpos, Direction.EAST)).with(NORTH, this.getSide(iblockreader, blockpos, Direction.NORTH)).with(SOUTH, this.getSide(iblockreader, blockpos, Direction.SOUTH));
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (facing == Direction.DOWN) {
-            return stateIn;
-        } else {
-            return facing == Direction.UP ? stateIn.with(WEST, this.getSide(worldIn, currentPos, Direction.WEST)).with(EAST, this.getSide(worldIn, currentPos, Direction.EAST)).with(NORTH, this.getSide(worldIn, currentPos, Direction.NORTH)).with(SOUTH, this.getSide(worldIn, currentPos, Direction.SOUTH)) : stateIn.with(FACING_PROPERTY_MAP.get(facing), this.getSide(worldIn, currentPos, facing));
-        }
-    }
-
     private RedstoneSide getSide(IBlockReader worldIn, BlockPos pos, Direction face) {
         BlockPos blockpos = pos.offset(face);
         BlockState blockstate = worldIn.getBlockState(blockpos);
@@ -126,10 +126,7 @@ public class ElectricCableBlock extends Block {
         return blockstate.isSolidSide(worldIn, blockpos, Direction.UP);
     }
 
-    protected static boolean canConnectTo(IBlockReader world, BlockPos pos, @Nullable Direction side) {
-        if (world.getBlockState(pos).getBlock() == ModBlocks.ELECTRIC_CABLE.get()) { //TODO: remove this
-            return true;
-        }
+    protected boolean canConnectTo(IBlockReader world, BlockPos pos, @Nullable Direction side) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity == null) {
             return false;
@@ -175,4 +172,106 @@ public class ElectricCableBlock extends Block {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new ElectricCableTileEntity();
     }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+        if (facing == Direction.DOWN || facing == Direction.UP) {
+            return stateIn;
+        } else {
+            if (!worldIn.isRemote()) {
+                TileEntity neighborTileEntity = worldIn.getTileEntity(facingPos);
+                TileEntity cableTileEntity = worldIn.getTileEntity(currentPos);
+                if (neighborTileEntity != null && cableTileEntity instanceof ElectricCableTileEntity && !(neighborTileEntity instanceof  ElectricCableTileEntity)) {
+                    cableTileEntity.getCapability(CapabilityEnergy.ENERGY, facing).ifPresent(energy -> {
+                        ((ElectricCableEnergyStorage) energy).machinesPos.add(new Pair<>(facingPos, facing.getOpposite()));
+                        ((ElectricCableEnergyStorage) energy).getCachedMachines().add(new ElectricCableEnergyStorage.MachineEntry(neighborTileEntity, facing.getOpposite()));
+                    });
+                }
+            }
+            return stateIn.with(FACING_PROPERTY_MAP.get(facing), getSide(worldIn, currentPos, facing));
+//            return facing == Direction.UP ? stateIn.with(WEST, this.getSide(worldIn, currentPos, Direction.WEST)).with(EAST, this.getSide(worldIn, currentPos, Direction.EAST)).with(NORTH, this.getSide(worldIn, currentPos, Direction.NORTH)).with(SOUTH, this.getSide(worldIn, currentPos, Direction.SOUTH)) : stateIn.with(FACING_PROPERTY_MAP.get(facing), this.getSide(worldIn, currentPos, facing));
+        }
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        if (!worldIn.isRemote) {
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if (tileEntity instanceof ElectricCableTileEntity) {
+                ElectricCableTileEntity myCableTileEntity = (ElectricCableTileEntity) tileEntity;
+                TileEntityType<?> myType = myCableTileEntity.getType();
+                ArrayList<ElectricCableTileEntity> connectedCables = new ArrayList<>();
+
+                for (Direction direction : Direction.Plane.HORIZONTAL) {
+                    RedstoneSide redstoneSide = state.get(FACING_PROPERTY_MAP.get(direction));
+                    switch (redstoneSide) {
+                        case NONE:
+                            continue;
+                        case SIDE:
+                            TileEntity other = worldIn.getTileEntity(pos.offset(direction));
+                            if (other.getType() == myType) {
+                                connectedCables.add((ElectricCableTileEntity) other);
+                            } else {
+                                other = worldIn.getTileEntity(pos.offset(direction).down());
+                                if (other.getType() == myType) {
+                                    connectedCables.add((ElectricCableTileEntity) other);
+                                }
+                            }
+                            break;
+                        case UP:
+                            TileEntity otherUp = worldIn.getTileEntity(pos.offset(direction).up());
+                            if (otherUp.getType() == myType) {
+                                connectedCables.add((ElectricCableTileEntity) otherUp);
+                            }
+                            break;
+                    }
+                }
+
+                CableNetworksData cableNetworksData = CableNetworksData.get((ServerWorld) worldIn);
+                if (connectedCables.size() == 1) {
+                    cableNetworksData.networks.get(connectedCables.get(0).networkID).cables.add(pos);
+                    myCableTileEntity.networkID = connectedCables.get(0).networkID;
+                } else if (connectedCables.size() > 1) {
+                    int minID = Integer.MAX_VALUE;
+                    for (ElectricCableTileEntity otherCableTileEntity : connectedCables) {
+                        if (otherCableTileEntity.networkID < minID) {
+                            minID = otherCableTileEntity.networkID;
+                        }
+                    }
+
+                    CableNetwork cableNetwork = cableNetworksData.networks.get(minID);
+                    for (ElectricCableTileEntity otherCableTileEntity : connectedCables) {
+                        cableNetworksData.networks.get(otherCableTileEntity.networkID).mergeInto(cableNetwork, (ServerWorld) worldIn).cables.add(pos);
+                        myCableTileEntity.networkID = minID;
+                    }
+                } else {
+                    CableNetwork cableNetwork = cableNetworksData.createNetwork();
+                    cableNetwork.cables.add(pos);
+                    myCableTileEntity.networkID = cableNetwork.id;
+                }
+            }
+        }
+    }
+
+    /*
+    @Override
+    public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
+        if (!world.isRemote()) {
+            TileEntity tileEntity = world.getTileEntity(pos);
+            TileEntity neighborTileEntity = world.getTileEntity(neighbor);
+            if (tileEntity instanceof ElectricCableTileEntity && neighborTileEntity != null
+                    && tileEntity.getType() != neighborTileEntity.getType()) {
+                Vec3i relative = neighbor.subtract(pos);
+                Direction direction = Direction.getFacingFromVector(relative.getX(), relative.getY(), relative.getZ());
+                neighborTileEntity.getCapability(CapabilityEnergy.ENERGY, direction).ifPresent(energy -> {
+                            tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(myEnergy -> {
+                                ((ElectricCableEnergyStorage) myEnergy).machinesPos.add(new Pair<>(neighbor, direction));
+                                ((ElectricCableEnergyStorage) myEnergy).getCachedMachines().add(new ElectricCableEnergyStorage.MachineEntry(neighborTileEntity, direction));
+                            });
+                });
+            }
+        }
+    }
+     */
 }
